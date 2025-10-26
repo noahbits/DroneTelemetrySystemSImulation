@@ -3,18 +3,16 @@
 
 #include "Telemetry.h"
 #include "IngestionService.h"
+#include <atomic>
 
-/**
- * @brief Simulates a drone telemetry producer.
- * Generates telemetry packets at a fixed rate and submits them to the IngestionService.
- */
 class Producer {
 public:
-    explicit Producer(IngestionService& ingestion_service);
-    void run();  // produces and submits telemetry at 1 Hz
+    Producer(IngestionService& ingestion_service, std::atomic<bool>& running);
+    void run();
 
 private:
     IngestionService& ingestion_service_;
+    std::atomic<bool>& running_; // shared stop flag
 };
 
 #endif // PRODUCER_H

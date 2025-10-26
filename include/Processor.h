@@ -3,23 +3,20 @@
 
 #include "Telemetry.h"
 #include "TelemetryQueue.h"
+#include <atomic>
 #include <fstream>
 
-/**
- * @brief Consumes telemetry from the shared queue and writes it to storage.
- */
 class Processor {
 public:
-    explicit Processor(TelemetryQueue& queue, const std::string& filename = "telemetry.jsonl");
-    explicit Processor(TelemetryQueue& queue);
-    void run();  // continuously reads from queue and writes to file
+    Processor(TelemetryQueue& queue, const std::string& filename, std::atomic<bool>& running);
+    void run();
 
 private:
-    void writeToFile(const Telemetry& packet) const;
+    void writeToFile(const Telemetry& packet);
 
     TelemetryQueue& queue_;
     std::ofstream outputFile_;
+    std::atomic<bool>& running_; // shared stop flag
 };
 
 #endif // PROCESSOR_H
-
